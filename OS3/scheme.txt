@@ -1,0 +1,28 @@
+1-ый поток:
+
+InitializeCriticalSection(&cs);
+код потока 1
+ввод данных
+запуск второго потока
+запуск третьего потока
+WaitForSingleObject(hEvent[0], INFINITE); //стрелочка на начало второго потока
+SetEvent(hEvent[1]); // дает сигнал multElement о начале умножения с позиции k
+TryEnterCriticalSection(&cs);
+вывод результатов потоков 2 и 3
+SetEvent(hEvent[1]); // дает сигнал multElement о начале полного умножения
+LeaveCriticalSection(&cs);
+DeleteCriticalSection(&cs);
+
+2-ой поток:
+
+код потока 2
+SetEvent(hEvent[0]); //извещение потока main о начале умножения
+
+3-ий поток:
+
+EnterCriticalSection(&cs);
+WaitForSingleObject(hEvent[1], INFINITE); //ждет сигнал о начале умножения с позиции k
+код потока 3
+LeaveCriticalSection(&cs);
+WaitForSingleObject(hEvent[1], INFINITE);//ждет сигнал о начале итогового умножения
+код потока 3
